@@ -37,7 +37,7 @@ def remove(list):
     list.pop(0)
     return n
 
-def BFS(S, G, map, fringe):
+def DFS(S, G, map, fringe):
 
     if(G == S):
         map[S[0]][S[1]] = S
@@ -62,20 +62,21 @@ def BFS(S, G, map, fringe):
             #Insert unvisisted nodes to fringe
             if(left >= 0):
                 if(map[left][n[1]] == 0):
-                    fringe.append((left,n[1]))
+                    fringe.insert(0,(left, n[1]))
                     map[left][n[1]] = n
             if(right < 100):
                 if(map[right][n[1]] == 0):
-                    fringe.append((right,n[1]))
+                    fringe.insert(0,(right,n[1]))
                     map[right][n[1]] = n
             if(up >= 0):
                 if(map[n[0]][up] == 0):
-                    fringe.append((n[0],up))
+                    fringe.insert(0,(n[0],up))
                     map[n[0]][up] = n
             if(down < 200):
                 if(map[n[0]][down] == 0):
-                    fringe.append((n[0],down))
+                    fringe.insert(0,(n[0],down))
                     map[n[0]][down] = n
+
     return map
 
 def getPath(S,G,map):
@@ -100,5 +101,5 @@ map = initMap(S, G)
 fringe = [S]
 map[S[0]][S[1]] = S #Denote starting node as visited
 
-BFS(S,G,map,fringe)
+DFS(S,G,map,fringe)
 print(getPath(S,G,map))

@@ -1,21 +1,17 @@
 import math
 
 #Functions
-def startPosition():
-    startx = int(input("Start pos x:"))
-    starty = int(input("Start pos y:"))
+def fileNameInput():
+    fileName = input("Input filename: ")
+    return fileName
 
-    startPos = (startx,starty)
-    print("Start: " + str(startPos))
-    return startPos
-
-def goalPosition():
-    goalx = int(input("Goal pos x:"))
-    goaly = int(input("Goal pos y:"))
-
-    goalPos = (goalx,goaly)
-    print("Goal: " + str(goalPos))
-    return goalPos
+def textToTuple(text):
+    text = text.replace("(","")
+    text = text.replace(")","")
+    text = text.replace("\n","")
+    text = text.split(",")
+    # print(text)
+    return ((int(text[0]),int(text[1])))
 
 def initMap(start, goal):
     map = [[] for i in range(101)]
@@ -32,7 +28,7 @@ def initMap(start, goal):
 
     return map
 
-def remove(list):
+def removeFirst(list):
     n = list[0]
     list.pop(0)
     return n
@@ -89,16 +85,48 @@ def getPath(S,G,map):
     return path
 
 #Main
+def Main():
 
-#Input
-S = startPosition()
-G = goalPosition()
+    f = open(fileNameInput(), 'r')
+    fileTxt = f.read()
+    f.close()
 
-#Initialize map
-map = initMap(S, G)
+    fileTxt = fileTxt.split('\n')
 
-fringe = [S]
-map[S[0]][S[1]] = S #Denote starting node as visited
+    startPos = textToTuple(removeFirst(fileTxt))
+    goalPos = textToTuple(removeFirst(fileTxt))
 
-BFS(S,G,map,fringe)
-print(getPath(S,G,map))
+    # print(startTxt)
+    # print(goalTxt)
+    if(fileTxt[len(fileTxt)-1] == ""):
+        fileTxt.pop()
+    # print(fileTxt)
+    polygons = []
+    i = 0
+    for p in fileTxt:
+        p = p.replace("(","")
+        p = p.replace(")","")
+        p = p.split(",")
+        k = 0
+        vertices = []
+        while(k*2 < len(p)):
+            vertices.append((int(p[2*k]),int(p[2*k+1])))
+            # print(p[2*k])
+            # print(p[2*k + 1])
+            # print(i)
+            # print(k)
+            # print("\n")
+            k = k + 1
+        polygons.append(vertices)
+        i = i + 1
+    print(startPos)
+    print(goalPos)
+    for p in polygons:
+        print(p)
+    map = initMap(startPos,goalPos)
+    fringe = [startPos]
+    map[startPos[0]][startPos[1]] = startPos
+    BFS(startPos, goalPos, map, fringe)
+    print(getPath(startPos,goalPos,map))
+
+Main()

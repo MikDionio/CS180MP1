@@ -1,5 +1,5 @@
 import math
-
+from matplotlib import pyplot as plt
 #Functions
 def fileNameInput():
     fileName = input("Input filename: ")
@@ -127,6 +127,13 @@ def Main():
     fringe = [startPos]
     map[startPos[0]][startPos[1]] = startPos
     BFS(startPos, goalPos, map, fringe)
-    print(getPath(startPos,goalPos,map))
+    path = getPath(startPos,goalPos,map)
 
+    x = []
+    y = []
+    for p in path:
+        x.append(p[0])
+        y.append(p[1])
+    plt.plot(x,y)
+    plt.show()
 Main()

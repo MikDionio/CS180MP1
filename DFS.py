@@ -1,10 +1,11 @@
 import math
+from matplotlib import pyplot as plt
 
 #Functions
 def fileNameInput():
     fileName = input("Input filename: ")
     return fileName
-    
+
 def textToTuple(text):
     text = text.replace("(","")
     text = text.replace(")","")
@@ -13,7 +14,7 @@ def textToTuple(text):
     # print(text)
     return ((int(text[0]),int(text[1])))
 
-def initMap(start, goal):
+def initMapUninformed(start, goal):
     map = [[] for i in range(101)]
 
     #This is heuristic function for A*
@@ -33,8 +34,8 @@ def removeFirst(list):
     list.pop(0)
     return n
 
-def DFS(S, G, map, fringe):
-
+def DFS(S, G, map):
+    fringe = [S]
     if(G == S):
         map[S[0]][S[1]] = S
     else:
@@ -86,22 +87,31 @@ def getPath(S,G,map):
     return path
 
 #Main
-def Main():
+def Input():
 
+    #Obtain input file text, ensure input file is in same directory
     f = open(fileNameInput(), 'r')
     fileTxt = f.read()
     f.close()
 
+    #Divide input text by line
     fileTxt = fileTxt.split('\n')
 
+    #First line is start pos
     startPos = textToTuple(removeFirst(fileTxt))
+
+    #Next line is goal pos
     goalPos = textToTuple(removeFirst(fileTxt))
 
     # print(startTxt)
     # print(goalTxt)
+
+    #Remove empty line from end of list
     if(fileTxt[len(fileTxt)-1] == ""):
         fileTxt.pop()
     # print(fileTxt)
+
+    #Obtain polygon vertices
     polygons = []
     i = 0
     for p in fileTxt:
@@ -120,26 +130,34 @@ def Main():
             k = k + 1
         polygons.append(vertices)
         i = i + 1
+
+    #Print inputs
     print(startPos)
     print(goalPos)
     for p in polygons:
         print(p)
-    map = initMap(startPos,goalPos)
-    fringe = [startPos]
-    map[startPos[0]][startPos[1]] = startPos
-    DFS(startPos, goalPos, map, fringe)
-    print(getPath(startPos,goalPos,map))
 
-Main()
-#Input
-# S = startPosition()
-# G = goalPosition()
-#
-# #Initialize map
-# map = initMap(S, G)
-#
-# fringe = [S]
-# map[S[0]][S[1]] = S #Denote starting node as visited
-#
-# DFS(S,G,map,fringe)
-# print(getPath(S,G,map))
+    inputs = []
+    inputs.append(startPos)
+    inputs.append(goalPos)
+    for p in polygons:
+        inputs.append(p)
+
+    return inputs
+
+def DFSProper(startPos, goalPos, polygons):
+    map = initMapUninformed(startPos,goalPos)
+    #fringe = [startPos]
+    map[startPos[0]][startPos[1]] = startPos
+    DFS(startPos, goalPos, map)
+    path = getPath(startPos,goalPos,map)
+    print(path)
+    x = []
+    y = []
+    for p in path:
+        x.append(p[0])
+        y.append(p[1])
+    plt.plot(x,y)
+    plt.show()
+Input = Input()
+DFSProper(removeFirst(Input), removeFirst(Input), Input)
